@@ -21,7 +21,7 @@ class BTree {
     public void insert(int key) {
         if (root == null) {
             root = new BTreeNode(m, true);
-            root.keys[0] = key;
+            root.keys.set(0, key);
             root.num = 1;
         } else {
             if (root.num == 2 * m - 1) {
@@ -30,7 +30,7 @@ class BTree {
                 s.splitChild(0, root);
 
                 int i = 0;
-                if (s.keys[0] < key) {
+                if (s.keys.get(0) < key) {
                     i++;
                 }
                 s.children[i].insertNonFull(key);

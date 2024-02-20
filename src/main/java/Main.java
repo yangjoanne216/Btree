@@ -1,13 +1,21 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
         /*test 1*/
-        int[] nodeValues1= {27,37};
+      /*  int[] nodeValues1= {27,37};
         int[] nodeValues2={10,15,20,25};
         int[] nodeValues3={30,35};
-        int[] nodeValues4={40,45};
+        int[] nodeValues4={40,45};*/
+        List nodeValues1 = Arrays.asList(27,37);
+        List nodeValues2 = Arrays.asList(10,15,20,25);
+        List nodeValues3 = Arrays.asList(30,35);
+        List nodeValues4 = Arrays.asList(40,45);
 
         //feuilles
-        BTreeNode b2 = new BTreeNode(5,nodeValues2);
+        BTreeNode b2 = new BTreeNode(5, nodeValues2);
         BTreeNode b3 = new BTreeNode(5,nodeValues3);
         BTreeNode b4 = new BTreeNode(5,nodeValues4);
         //racien
