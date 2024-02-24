@@ -76,7 +76,7 @@ class BTreeNode {
         }
 
         //if ki<k<ki+1
-        for(int i=0;i<num-1;i++){
+        for(int i=0;i<keys.size()-1;i++){
             if(key == keys.get(i))
                 return null; // on a bien trouvé , the search is unsuccessful
 
@@ -93,9 +93,10 @@ class BTreeNode {
             return null;
         if(this.leaf)
             return this;//if is leaf, the research is unsuccessful
-        return children.get(num).search(key);// if not , do the resarch in children num+1
+        return children.get(keys.size()).search(key);// if not , do the resarch in children num+1
     }
-    //插入父节点部分的
+
+
     public void insert(int key, int i){
         //sinon on ajout et il y a deux cas
         // target node n'est pleine
