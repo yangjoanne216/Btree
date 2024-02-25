@@ -1,55 +1,45 @@
+import org.w3c.dom.Node;
+
 import java.util.ArrayList;
 import java.util.List;
 
 class BTreeNode {
-    //int[] keys; // Key value
-   List<Integer> keys; //Key Value
+    List<Integer> keys; //Key Value
     int m; // comme le dégre
-
     List<BTreeNode> children; // pointeurs vers les enfants
-
     ParentEntry parentEntry; // pointeurs vers le parent
-    int num; //le nombre de la valeur dans ce Node
-    boolean leaf; // vrai si il est feuille
+
+    //boolean leaf; // vrai si il est feuille
 
     public BTreeNode(int m){
         this.m =m;
     }
 
-
-    //测试constructor feuille
     public BTreeNode(int m, List keys){
         this.m = m;
         this.keys = keys;
         this.children = null;
-        this.leaf = true;
-        this.num=keys.size();
-        this.parentEntry =parentEntry;
+
     }
-    //测试  constructor racine
+
     public BTreeNode(int m,List keys,List children){
         this.m = m;
         this.keys = keys;
-        this.children = null;
-        this.leaf = false;
+        this.children = children;
         this.children=children;
-        this.num =keys.size();
     }
 
     public BTreeNode(int m, boolean leaf) {
         this.m = m;
-        this.leaf = leaf;
         this.keys = new ArrayList<>(); // chaque node a au plus m-1 valeurs
         this.children = new ArrayList<>(); // chaque node a au plus m enfants
-        this.num =keys.size(); //
     }
 
-    public BTreeNode(List<Integer> keys, int m, List<BTreeNode> children, ParentEntry parentEntry, int num) {
+    public BTreeNode(List<Integer> keys, int m, List<BTreeNode> children, ParentEntry parentEntry) {
         this.keys = keys;
         this.m = m;
         this.children = children;
         this.parentEntry = parentEntry;
-        this.num = num;
     }
 
     public BTreeNode(List<Integer> keys, int m, List<BTreeNode> children, ParentEntry parentEntry, int num, boolean leaf) {
@@ -57,8 +47,6 @@ class BTreeNode {
         this.m = m;
         this.children = children;
         this.parentEntry = parentEntry;
-        this.num = num;
-        this.leaf = leaf;
     }
 
     public BTreeNode() {
@@ -70,7 +58,7 @@ class BTreeNode {
         // if k < K0
         //if (key < keys.get(0) && this.leaf!=true)
         if (key < keys.get(0) ) {
-            if(this.leaf)
+            if(isLeaf())
                 return this; //if is leaf, the research is unsuccessful
             return children.get(0).search(key); // if not , do the resarch in children 0
         }
@@ -82,7 +70,7 @@ class BTreeNode {
 
             if(key>keys.get(i) && key< keys.get(i + 1)) ////if ki<k<ki+1
             {
-                if(this.leaf)
+                if(this.isLeaf())
                     return this;//if is leaf, the research is unsuccessful
                 return children.get(i + 1).search(key); // if not , do the resarch in children i+1
             }
@@ -91,38 +79,22 @@ class BTreeNode {
         //le loop est fini,c'est à dire K>K_num ou K=K_(num-1)
         if(key == keys.get(keys.size()-1))
             return null;
-        if(this.leaf)
+        if(isLeaf())
             return this;//if is leaf, the research is unsuccessful
         return children.get(keys.size()).search(key);// if not , do the resarch in children num+1
     }
 
-
-    public void insert(int key, int i){
-        //sinon on ajout et il y a deux cas
-        // target node n'est pleine
-        if(!(this.getKeys().size()>=m-1))
-        {
-            keys.add(i,key);
-        }
-        else{
-            //target est plein
-            //splitChild(key, parentEntry.getParent());
-        }
-
-    }
-
-    //插入feuiilton里面的
-    public BTreeNode insert(int key){
-        BTreeNode  newRoot = null;
+    public BTreeNode[] insert(int key){
+        BTreeNode[]  nodes = new BTreeNode[3];
         // this node n'est pleine
         if(!(this.getKeys().size()>=m-1))
         {
             insertNonFull(key);
         }
         else{ //target est plein
-           newRoot= splitChild(key);
+           nodes = splitChild(key);
         }
-        return newRoot;
+        return nodes;
     }
 
 
@@ -135,7 +107,8 @@ class BTreeNode {
         keys.add(i,key);
     }
 
-    public BTreeNode splitChild(int key) {
+
+    /*public BTreeNode splitChild(int key) {
         //trouver une place pour insérer la valeur
         int i= 0;
         while(i<keys.size()&&keys.get(i)<key){
@@ -159,68 +132,170 @@ class BTreeNode {
         }
 
         //把中间的数插入到父节点中
-        this.parentEntry.getParent().insert(keys.get(middle));
-        //this.parentEntry.getParent().insert(keys.get(middle),parentEntry.getIndex());
-
-        //剩下的分裂成两个
+        if(this.parentEntry.getParent().keys.size()<m-1){
+            //没有满，直接插入
+            this.parentEntry.getParent().insert(keys.get(middle));
+        }
+        else{
+            //满了，调用splitChild
+           newRoot= this.parentEntry.getParent().splitChild(keys.get(middle));
+        }
 
         //左侧的BtreeNode
-        BTreeNode left = new BTreeNode(m);
+        BTreeNode leftNode = new BTreeNode(m);
         //1.左侧的kyes
         List<Integer> leftKeys = new ArrayList<>(keys.subList(0,middle));
-        left.setKeys(leftKeys);
+        leftNode.setKeys(leftKeys);
         //2.之前有m个children，现在有 m+1
         List<BTreeNode> leftChildren;
         if(children==null){
             leftChildren = null;
-            left.setLeaf(true);
+            leftNode.setLeaf(true);
         }
         else {
-            leftChildren = new ArrayList<>(children.subList(0,(m+1)/2-1));
+            leftChildren = new ArrayList<>(children.subList(0,(m+1)/2));
         }
-        left.setChildren(leftChildren);
+        leftNode.setChildren(leftChildren);
         //3.parentEntry 左侧的序号不变
-        ParentEntry leftparentEntry = new ParentEntry(this.parentEntry.getIndex(),this.parentEntry.getParent());
-        left.setParentEntry(leftparentEntry);
+        ParentEntry leftParentEntry = new ParentEntry(this.parentEntry.getIndex(),this.parentEntry.getParent());
+        leftNode.setParentEntry(leftParentEntry);
         //left = new BTreeNode(leftKeys,this.m,leftChildren,leftparentEntry,middle+1);
 
         //右侧的BtreeNode
-        BTreeNode right = new BTreeNode(m);
+        BTreeNode rightNode = new BTreeNode(m);
         //1.右侧的BtreeNode
         List<Integer> rightKeys = new ArrayList<>(keys.subList(middle+1,m));
-        right.setKeys(rightKeys);
+        rightNode.setKeys(rightKeys);
         //2.之前有m个children，现在有 m+1
         List<BTreeNode> rightChildren;
         if(children==null){
             rightChildren = null;
-            right.setLeaf(true);
+            rightNode.setLeaf(true);
         }
         else{
             rightChildren = new ArrayList<>(children.subList((m+1)/2,m));
         }
-        right.setChildren(rightChildren);
+        rightNode.setChildren(rightChildren);
         //3.parentEntry 右侧的序号 +1
         ParentEntry rightparentEntry = new ParentEntry(this.parentEntry.getIndex()+1,this.parentEntry.getParent());
-        right.setParentEntry(rightparentEntry);
+        rightNode.setParentEntry(rightparentEntry);
         //right = new BTreeNode(rightKeys,this.m,rightChildren,rightparentEntry,middle+1);
 
         //往父节点中添加leftnode
-        this.parentEntry.getParent().children.add(left.parentEntry.getIndex(),left);
+        this.parentEntry.getParent().children.add(leftNode.parentEntry.getIndex(),leftNode);
         //往父节点中添加rightnode
-        this.parentEntry.getParent().children.add(right.parentEntry.getIndex(),right);
+        this.parentEntry.getParent().children.add(rightNode.parentEntry.getIndex(),rightNode);
         //把父节点中的冗余node删除
-        this.parentEntry.getParent().children.remove(right.parentEntry.getIndex()+1);
-       /* if(this.parentEntry.getParent().children.size()==right.parentEntry.getIndex()){
-            //添加到末尾
-            this.parentEntry.getParent().children.add(right);
-        }
-        else {
-            this.parentEntry.getParent().children.add(right.parentEntry.getIndex(),right);
-        }*/
+        this.parentEntry.getParent().children.remove(rightNode.parentEntry.getIndex()+1);
 
+        return newRoot;
+    }*/
+
+    public void insertFull(int key){
+        //trouver une place pour insérer la valeur
+        int i= 0;
+        while(i<keys.size()&&keys.get(i)<key){
+            i++;
+        }
+        //现在数组的长度是比 m-1要大一位
+        keys.add(i,key);
+    }
+
+    public BTreeNode initialRoot(){
+        BTreeNode newRoot = null;
+        //return 一个父节点加1，就是要changeRoot了
+        List rootKey = new ArrayList<Integer>();
+        //children要等后面分成两个小孩之后再慢慢的去set
+        newRoot = new BTreeNode(rootKey, m,new ArrayList<>(),new ParentEntry());
+        //return newRoot
+        this.setParentEntry(0,newRoot);
+        newRoot.children.add(this);
         return newRoot;
     }
 
+
+    public BTreeNode initialLeftNode(){
+        //左侧的BtreeNode
+        BTreeNode leftNode = new BTreeNode(m);
+        //1.左侧的kyes
+        List<Integer> leftKeys = new ArrayList<>(keys.subList(0,m/2));
+        leftNode.setKeys(leftKeys);
+        //2.之前有m个children，现在有 m+1
+        List<BTreeNode> leftChildren;
+        if(children==null){
+            leftChildren = null;
+        }
+        else {
+            leftChildren = new ArrayList<>(children.subList(0,(m+1)/2));
+        }
+        leftNode.setChildren(leftChildren);
+        //3.parentEntry 左侧的序号不变
+        ParentEntry leftParentEntry = new ParentEntry(this.parentEntry.getIndex(),this.parentEntry.getParent());
+        leftNode.setParentEntry(leftParentEntry);
+        return leftNode;
+    }
+
+    public BTreeNode initialRightNode(){
+        BTreeNode rightNode = new BTreeNode(m);
+        //1.右侧的BtreeNode
+        List<Integer> rightKeys = new ArrayList<>(keys.subList(m/2+1,keys.size()));
+        rightNode.setKeys(rightKeys);
+        //2.之前有m个children，现在有 m+1
+        List<BTreeNode> rightChildren;
+        if(children==null){
+            rightChildren = null;
+        }
+        else{
+            rightChildren = new ArrayList<>(children.subList((m+1)/2,m));
+        }
+        rightNode.setChildren(rightChildren);
+        //3.parentEntry 右侧的序号 +1
+        ParentEntry rightparentEntry = new ParentEntry(this.parentEntry.getIndex()+1,this.parentEntry.getParent());
+        rightNode.setParentEntry(rightparentEntry);
+        return rightNode;
+    }
+
+    public BTreeNode[] splitChild(int key) {
+        //返回值，分别返回 是否有newRacine，leftNode，以及 rightNode
+        BTreeNode[] nodes  =new BTreeNode[3];
+        //1.找到中间的那个数，
+        insertFull(key);
+
+        //2.把中间的那个数插入父节点
+        //2.1 判断如果父节点为null，就说明是一个root,要开始设置新的root了
+        if(this.parentEntry.getParent()==null){
+            nodes[0] = initialRoot();
+        }
+
+        //2.2把中间的数插入到父节点中
+        if(this.parentEntry.getParent().keys.size()<m-1){
+            //没有满，直接插入
+            this.parentEntry.getParent().insertFull(keys.get(m/2));
+        }
+        else{
+            //满了，调用splitChild
+            nodes = this.parentEntry.getParent().splitChild(keys.get(m/2));
+        }
+
+        //创建左侧的BTreeNode
+        nodes[1] = initialLeftNode();
+        //创建右侧的BTreeNode
+        nodes[2] = initialRightNode();
+
+
+
+        //现在left和right节点是原来parent新的子节点了，而之前的老节点从父节点中删除
+        //处理父节点与左node和右node的关系
+
+        //往父节点中添加leftnode
+        this.parentEntry.getParent().children.add(nodes[1].parentEntry.getIndex(),nodes[1]);
+        //往父节点中添加rightnode
+        this.parentEntry.getParent().children.add(nodes[2].parentEntry.getIndex(),nodes[2]);
+        //把父节点中的冗余node删除 就是那个冗余node(多一个key的node)
+        this.parentEntry.getParent().children.remove(nodes[2].parentEntry.getIndex()+1);
+
+        return nodes;
+    }
     private void setParentEntry(int i, BTreeNode parent) {
         this.parentEntry.setParent(parent);
         this.parentEntry.setIndex(i);
@@ -240,15 +315,6 @@ class BTreeNode {
     public List<BTreeNode> getChildren() {
         return children;
     }
-
-    public int getNum() {
-        return num;
-    }
-
-    public boolean isLeaf() {
-        return leaf;
-    }
-
 
     public void setKeys(List<Integer> keys) {
         this.keys = keys;
@@ -270,11 +336,9 @@ class BTreeNode {
         this.parentEntry = parentEntry;
     }
 
-    public void setNum(int num) {
-        this.num = num;
-    }
 
-    public void setLeaf(boolean leaf) {
-        this.leaf = leaf;
+
+    public boolean isLeaf() {
+        return (this.children==null||this.children.size()==0);
     }
 }

@@ -1,6 +1,5 @@
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+
+import java.util.*;
 
 class BTree {
     private BTreeNode root;
@@ -25,7 +24,7 @@ class BTree {
         if (root == null) {
             List rootKey = new ArrayList<Integer>();
             rootKey.add(key);
-            root = new BTreeNode(rootKey, m,null,new ParentEntry(),1,true);
+            root = new BTreeNode(rootKey, m,null,new ParentEntry());
             setRoot(root);
             setHeight(1);
         } else {
@@ -37,9 +36,9 @@ class BTree {
                 return;
             }
             //让节点去调用insert方法
-            BTreeNode newRoot=nodeTarget.insert(key);
-            if(newRoot !=null){
-                setRoot(newRoot);
+            BTreeNode[] nodes = nodeTarget.insert(key);
+            if(nodes[0] !=null){
+                setRoot(nodes[0]);
                 this.height = this.height+1;
             }
         }
@@ -78,5 +77,26 @@ class BTree {
     public void setHeight(int height) {
         this.height = height;
     }
+
+    public void show() {
+        if (root == null) {
+            System.out.println("The B-tree is empty");
+            return;
+        }
+        Queue<BTreeNode> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int levelSize = queue.size(); // 当前层的节点数
+            for (int i = 0; i < levelSize; i++) {
+               BTreeNode node = queue.poll();
+                System.out.print(node.keys + " ");
+                queue.addAll(node.children); // 将当前节点的所有子节点加入队列
+            }
+            System.out.println(); // 当前层的所有节点已打印，换行到下一层
+        }
+
+    }
+
+
 
 }
