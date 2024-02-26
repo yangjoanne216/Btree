@@ -1,4 +1,4 @@
-import org.w3c.dom.Node;
+package java.com.yangyang.tp2_paire;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -104,92 +104,17 @@ class BTreeNode {
         while(i<keys.size()&&keys.get(i)<key){
             i++;
         }
-        keys.add(i,key);
+        keys.add(i,key); //（插入位置为i）
+        if(!this.isLeaf()){ //如果不是子节点
+            int j = i+1;
+            while(j==this.children.size()&& children.get(j)==null){
+                int newIndex= children.get(i).getParentEntry().getIndex()+1;
+                children.get(i).getParentEntry().setIndex(newIndex);
+                j++;
+            }
+        }
+
     }
-
-
-    /*public BTreeNode splitChild(int key) {
-        //trouver une place pour insérer la valeur
-        int i= 0;
-        while(i<keys.size()&&keys.get(i)<key){
-            i++;
-        }
-        //现在数组的长度是比 m-1要大一位
-        keys.add(i,key);
-        //找到中间的那个数
-        int middle = m/2;
-        //把中间的那个数插入父节点
-        //如果父节点为null，就说明是一个root,要开始设置新的root了
-        BTreeNode newRoot = null;
-        if(this.parentEntry.getParent()==null){
-            //return 一个父节点加1，就是要changeRoot了
-            List rootKey = new ArrayList<Integer>();
-            //children要等后面分成两个小孩之后再慢慢的去set
-            newRoot = new BTreeNode(rootKey, m,new ArrayList<>(),new ParentEntry(),1,false);
-            //return newRoot
-            this.setParentEntry(0,newRoot);
-            newRoot.children.add(this);
-        }
-
-        //把中间的数插入到父节点中
-        if(this.parentEntry.getParent().keys.size()<m-1){
-            //没有满，直接插入
-            this.parentEntry.getParent().insert(keys.get(middle));
-        }
-        else{
-            //满了，调用splitChild
-           newRoot= this.parentEntry.getParent().splitChild(keys.get(middle));
-        }
-
-        //左侧的BtreeNode
-        BTreeNode leftNode = new BTreeNode(m);
-        //1.左侧的kyes
-        List<Integer> leftKeys = new ArrayList<>(keys.subList(0,middle));
-        leftNode.setKeys(leftKeys);
-        //2.之前有m个children，现在有 m+1
-        List<BTreeNode> leftChildren;
-        if(children==null){
-            leftChildren = null;
-            leftNode.setLeaf(true);
-        }
-        else {
-            leftChildren = new ArrayList<>(children.subList(0,(m+1)/2));
-        }
-        leftNode.setChildren(leftChildren);
-        //3.parentEntry 左侧的序号不变
-        ParentEntry leftParentEntry = new ParentEntry(this.parentEntry.getIndex(),this.parentEntry.getParent());
-        leftNode.setParentEntry(leftParentEntry);
-        //left = new BTreeNode(leftKeys,this.m,leftChildren,leftparentEntry,middle+1);
-
-        //右侧的BtreeNode
-        BTreeNode rightNode = new BTreeNode(m);
-        //1.右侧的BtreeNode
-        List<Integer> rightKeys = new ArrayList<>(keys.subList(middle+1,m));
-        rightNode.setKeys(rightKeys);
-        //2.之前有m个children，现在有 m+1
-        List<BTreeNode> rightChildren;
-        if(children==null){
-            rightChildren = null;
-            rightNode.setLeaf(true);
-        }
-        else{
-            rightChildren = new ArrayList<>(children.subList((m+1)/2,m));
-        }
-        rightNode.setChildren(rightChildren);
-        //3.parentEntry 右侧的序号 +1
-        ParentEntry rightparentEntry = new ParentEntry(this.parentEntry.getIndex()+1,this.parentEntry.getParent());
-        rightNode.setParentEntry(rightparentEntry);
-        //right = new BTreeNode(rightKeys,this.m,rightChildren,rightparentEntry,middle+1);
-
-        //往父节点中添加leftnode
-        this.parentEntry.getParent().children.add(leftNode.parentEntry.getIndex(),leftNode);
-        //往父节点中添加rightnode
-        this.parentEntry.getParent().children.add(rightNode.parentEntry.getIndex(),rightNode);
-        //把父节点中的冗余node删除
-        this.parentEntry.getParent().children.remove(rightNode.parentEntry.getIndex()+1);
-
-        return newRoot;
-    }*/
 
     public void insertFull(int key){
         //trouver une place pour insérer la valeur
@@ -269,12 +194,26 @@ class BTreeNode {
 
         //2.2把中间的数插入到父节点中
         if(this.parentEntry.getParent().keys.size()<m-1){
-            //没有满，直接插入
+            //父节点没有满，直接插入
             this.parentEntry.getParent().insertFull(keys.get(m/2));
         }
         else{
-            //满了，调用splitChild
+            //父节点满了，调用splitChild
             nodes = this.parentEntry.getParent().splitChild(keys.get(m/2));
+            //从父亲左右节点中选择新的父节点
+            int location = getParentEntry().getIndex();
+
+            //如果节点在便向右侧
+            if(location<m/2){
+                this.setParentEntry(location,nodes[1]);
+            }
+
+            //如果节点在便向左侧
+            if(location>(m+1)/2-1){
+                this.setParentEntry(location-((m+1)/2),nodes[2]);
+            }
+
+            //Todo 如果节点在正中间
         }
 
         //创建左侧的BTreeNode
@@ -292,8 +231,8 @@ class BTreeNode {
         //往父节点中添加rightnode
         this.parentEntry.getParent().children.add(nodes[2].parentEntry.getIndex(),nodes[2]);
         //把父节点中的冗余node删除 就是那个冗余node(多一个key的node)
+        //this.parentEntry.getParent().children.remove(nodes[2].parentEntry.getIndex()+1);
         this.parentEntry.getParent().children.remove(nodes[2].parentEntry.getIndex()+1);
-
         return nodes;
     }
     private void setParentEntry(int i, BTreeNode parent) {
@@ -302,9 +241,6 @@ class BTreeNode {
     }
 
     public List<Integer> getKeys() {
-        for (int i=0;i<this.keys.size();i++){
-            System.out.println(keys.get(i));
-        }
         return keys;
     }
 

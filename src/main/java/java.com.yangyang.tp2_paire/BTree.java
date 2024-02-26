@@ -1,3 +1,4 @@
+package java.com.yangyang.tp2_paire;
 
 import java.util.*;
 
@@ -44,16 +45,6 @@ class BTree {
         }
     }
 
-    // BTreeNode类的辅助方法
-    private void splitChild(int i, BTreeNode y) {
-        // 此方法和insertNonFull需要在BTreeNode类中实现
-    }
-
-    // BTreeNode类的辅助方法
-    private void insertNonFull(int key) {
-        // 此方法需要在BTreeNode类中实现
-    }
-
     public BTreeNode getRoot() {
         return root;
     }
@@ -78,23 +69,27 @@ class BTree {
         this.height = height;
     }
 
+    // 使用队列按层打印B树
     public void show() {
-        if (root == null) {
-            System.out.println("The B-tree is empty");
-            return;
-        }
+        System.out.println();
         Queue<BTreeNode> queue = new LinkedList<>();
-        queue.add(root);
+        queue.add(root); // 将根节点加入队列
+
         while (!queue.isEmpty()) {
             int levelSize = queue.size(); // 当前层的节点数
             for (int i = 0; i < levelSize; i++) {
-               BTreeNode node = queue.poll();
-                System.out.print(node.keys + " ");
-                queue.addAll(node.children); // 将当前节点的所有子节点加入队列
-            }
-            System.out.println(); // 当前层的所有节点已打印，换行到下一层
-        }
+                BTreeNode node = queue.poll(); // 从队列中取出一个节点
+                // 打印当前节点的所有键
+                node.getKeys().forEach(key -> System.out.print(key + " "));
+                System.out.print(" | "); // 同一层的节点之间用"|"分隔
 
+                // 如果节点不是叶子节点，将其子节点加入队列
+                if (!node.isLeaf()) {
+                    node.getChildren().forEach(child -> queue.add(child));
+                }
+            }
+            System.out.println(); // 完成一层的打印后换行，开始打印下一层
+        }
     }
 
 
