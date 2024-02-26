@@ -2,7 +2,7 @@ package com.yangyang.tp2;
 
 public class mainTest {
     public static void main(String[] args) {
-        BTree bTree = new BTree(3);
+        /*BTree bTree = new BTree(3);
         bTree.insert(10);
         bTree.output();
         System.out.println("------------------------");
@@ -61,7 +61,23 @@ public class mainTest {
         bTree.output();
         System.out.println("------------------------");
         bTree.delete(90);
-        bTree.output();
+        bTree.output();*/
+
+        BTree bTree = new BTree(2);
+        bTree.insert(1);
+        bTree.show();
+        bTree.insert(2);
+        bTree.show();
+        bTree.insert(3);
+        bTree.show();
+        bTree.insert(4);
+        bTree.show();
+        bTree.insert(5);
+        bTree.show();
+        bTree.insert(6);
+        bTree.show();
+        bTree.insert(7);
+        bTree.show();
     }
 
 }
