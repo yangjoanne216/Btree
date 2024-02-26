@@ -1,4 +1,4 @@
-package com.sgbd.tp2_impaire;
+package com.sgbd.tp2_paire;
 
 public class ResearchOutcome {
     /**

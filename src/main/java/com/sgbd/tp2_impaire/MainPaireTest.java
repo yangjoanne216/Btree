@@ -1,4 +1,4 @@
-package com.sgbd.tp2_paire;
+package com.sgbd.tp2_impaire;
 
 public class MainPaireTest {
 
