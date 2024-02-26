@@ -1,6 +1,6 @@
 package com.sgbd.tp2_paire;
 
-public class MainImpaireTest {
+public class MaiPaireTest {
     public static void main(String[] args) {
         BTree bTree = new BTree(4);
         bTree.insert(10);

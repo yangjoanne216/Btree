@@ -1,6 +1,6 @@
 package com.sgbd.tp2_impaire;
 
-public class MainPaireTest {
+public class MainImpaireTest {
 
     public static void main(String[] args) {
 
