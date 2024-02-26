@@ -2,68 +2,83 @@ package com.yangyang.tp2;
 
 public class mainTest {
     public static void main(String[] args) {
-        /*BTree bTree = new BTree(3);
+        BTree bTree = new BTree(4);
         bTree.insert(10);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(15);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(30);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(27);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(35);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(40);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(45);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(37);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(20);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(50);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(55);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(46);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(71);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(66);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(74);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(85);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(90);
-        bTree.output();
+        bTree.show();
+        System.out.println("------------------------");
+        bTree.insert(79);
+        bTree.show();
+        System.out.println("------------------------");
+        bTree.insert(78);
+        bTree.show();
+        System.out.println("------------------------");
+        bTree.insert(95);
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(25);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
         bTree.insert(81);
-        bTree.output();
+        bTree.show();
         System.out.println("------------------------");
-        bTree.delete(90);
-        bTree.output();*/
+        bTree.insert(68);
+        bTree.show();
+        System.out.println("------------------------");
+        bTree.insert(60);
+        bTree.show();
+        System.out.println("------------------------");
+        bTree.insert(65);
 
-        BTree bTree = new BTree(2);
+
+        /*BTree bTree = new BTree(3);
         bTree.insert(1);
         bTree.show();
         bTree.insert(2);
@@ -78,6 +93,9 @@ public class mainTest {
         bTree.show();
         bTree.insert(7);
         bTree.show();
+        bTree.insert(8);
+        bTree.show();*/
+
     }
 
 }

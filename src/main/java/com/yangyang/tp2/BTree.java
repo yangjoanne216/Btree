@@ -10,20 +10,24 @@ public class BTree {
     /**
      * Selon la définition de l'arbre B, le nombre de mots-clés n de chaque nœud non racine de l'arbre B est égal à (t - 1) <= n <= (2t - 1).
      */
-    private int t = DEFAULT_T;
+    /*m必须为奇数*/
+    private int m;
+    private int minKeySize = m/2-1;
+    private int maxKeySize=m-1;
+    /*private int t = DEFAULT_T;
     private int minKeySize = t - 1;
-    private int maxKeySize = 2 * t - 1;
+    private int maxKeySize = 2 * t - 1;*/
 
     public BTree() {
         root = new BTreeNode();
         root.setLeaf(true);
     }
 
-    public BTree(int t) {
+    public BTree(int m) {
         this();
-        this.t = t;
-        minKeySize = t - 1;
-        maxKeySize = 2 * t - 1;
+        this.m = m;
+        this.minKeySize = m%2==0?m/2-1:m/2;
+        this.maxKeySize=m-1;
     }
 
     /**
@@ -69,22 +73,38 @@ public class BTree {
     private void splitNode(BTreeNode parentNode, BTreeNode childNode, int index) {
         BTreeNode siblingNode = new BTreeNode();
         siblingNode.setLeaf(childNode.isLeaf()); //Si le nœud d'origine est un nœud feuille, le nœud scindé est également un nœud feuille.
-        // 将满子节点中索引为[t, 2t - 2]的(t - 1)个关键字插入新的节点中
+        //middle = t-1
+        int middle =(m+1)/2 -1;
+        /*// 将满子节点中索引为[t, 2t - 2]的(t - 1)个关键字插入新的节点中
         for (int i = 0; i < minKeySize; ++i)
-            siblingNode.getKey().add(childNode.getKey().get(t + i));
-        // 提取满子节点中的中间关键字，其索引为(t - 1)
-        Integer key = childNode.getKey().get(t - 1);
-        // 删除满子节点中索引为[t - 1, 2t - 2]的t个关键字
+            siblingNode.getKey().add(childNode.getKey().get(t + i));*/
+        // 将满子节点中索引为[(m+1)/2, m - 2]的(t - 1)个关键字插入新的节点中
+        for (int i = (m+1)/2; i < m - 1; ++i)
+            siblingNode.getKey().add(childNode.getKey().get(i));
+        /*// 提取满子节点中的中间关键字，其索引为(t - 1)
+        Integer key = childNode.getKey().get(t - 1);*/
+        // 提取满子节点中的中间关键字，其索引为(m+1)/2 -1
+        Integer key = childNode.getKey().get(middle);
+        /*// 删除满子节点中索引为[t - 1, 2t - 2]的t个关键字
         for (int i = maxKeySize - 1; i >= t - 1; --i)
+            childNode.getKey().remove(i);*/
+        // 删除满子节点中索引为[(m+1)/2 -1, m-2]的t个关键字
+        for (int i = maxKeySize - 1; i >= middle; --i)
             childNode.getKey().remove(i);
         // 如果满子节点不是叶节点，则还需要处理其子节点
         if (!childNode.isLeaf())
         {
-            // 将满子节点中索引为[t, 2t - 1]的t个子节点插入新的节点中
+           /* // 将满子节点中索引为[t, 2t - 1]的t个子节点插入新的节点中
             for (int i = 0; i < minKeySize + 1; ++i)
-                siblingNode.getChildren().add(childNode.getChildren().get(t + i));
-            // 删除满子节点中索引为[t, 2t - 1]的t个子节点
+                siblingNode.getChildren().add(childNode.getChildren().get(t + i));*/
+            //将满子节点中索引为[(m+1)/2, maxKeysize]的t个子节点插入新的节点中
+            for (int i = (m+1)/2; i <= maxKeySize ; ++i)
+                siblingNode.getChildren().add(childNode.getChildren().get(i));
+            /*// 删除满子节点中索引为[t, 2t - 1]的t个子节点
             for (int i = maxKeySize; i >= t; --i)
+                childNode.getChildren().remove(i);*/
+            // 删除满子节点中索引为[(m+1)/2 , m-2]的t个子节点
+            for (int i = maxKeySize; i >= (m+1)/2; --i)
                 childNode.getChildren().remove(i);
         }
         // 将key插入父节点
@@ -110,7 +130,7 @@ public class BTree {
              */
             ResearchOutcome result = node.searchKey(key);
             BTreeNode childNode = node.getChildren().get(result.getIndex());
-            if (childNode.size() == 2 * t - 1) // 如果子节点是满节点
+            if (childNode.size() == maxKeySize) // 如果子节点是满节点
             {
                 // 则先分裂
                 splitNode(node, childNode, result.getIndex());
@@ -142,21 +162,6 @@ public class BTree {
         }
         //从root开始尝试插入
         insertNotFull(root, key);
-    }
-
-    public void show2() {
-        Queue<BTreeNode> queue = new LinkedList<BTreeNode>();
-        queue.offer(root);
-        while (!queue.isEmpty()) {
-            BTreeNode node = queue.poll();
-            for (int i = 0; i < node.size(); ++i)
-                System.out.print(node.getKey().get(i) + " ");
-            System.out.println();
-            if (!node.isLeaf()) {
-                for (int i = 0; i <= node.size(); ++i)
-                    queue.offer(node.getChildren().get(i));
-            }
-        }
     }
 
     // 使用队列按层打印B树
