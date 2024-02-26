@@ -1,6 +1,6 @@
-package com.yangyang.tp2_impaire;
+package com.sgbd.tp2_impaire;
 
-public class mainTest {
+public class MainImpaireTest {
     public static void main(String[] args) {
         BTree bTree = new BTree(4);
         bTree.insert(10);

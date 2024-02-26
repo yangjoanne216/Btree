@@ -1,4 +1,4 @@
-package com.yangyang.tp2_impaire;
+package com.sgbd.tp2_impaire;
 
 import java.util.ArrayList;
 import java.util.List;

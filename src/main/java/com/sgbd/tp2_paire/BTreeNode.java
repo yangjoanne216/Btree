@@ -1,4 +1,4 @@
-package java.com.yangyang.tp2_paire;
+package com.sgbd.tp2_paire;
 
 import java.util.ArrayList;
 import java.util.List;

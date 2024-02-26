@@ -1,6 +1,6 @@
-package java.com.yangyang.tp2_paire;
+package com.sgbd.tp2_paire;
 
-public class MainTest {
+public class MainPaireTest {
 
     public static void main(String[] args) {
 
@@ -31,13 +31,8 @@ public class MainTest {
             bTree.show();
         }
 
-
-
-
-
-
         /*test2*/
-        //java.com.yangyang.tp2_paire.BTree bTree = new java.com.yangyang.tp2_paire.BTree(5);
+        /*java.com.yangyang.tp2_paire.BTree bTree = new java.com.yangyang.tp2_paire.BTree(5);
         int[] intergers = new int[]{10, 15, 30, 27, 35, 40, 45, 37, 20, 50, 55, 46, 71, 66, 74, 85, 90, 25, 81, 68, 60, 65};
         /*for (int integer : intergers
              ) {
@@ -95,14 +90,6 @@ public class MainTest {
         bTree.insert(65);
         bTree.show();
         /*--------------------*/
-        /*bTree.insert(72);
-        bTree.show();
-
-        bTree.insert(80);
-        bTree.show();
-        System.out.println(bTree);*/
     }
-
-
 
 }

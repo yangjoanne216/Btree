@@ -1,4 +1,4 @@
-package com.yangyang.tp2_impaire;
+package com.sgbd.tp2_impaire;
 
 public class ResearchOutcome {
     /**
