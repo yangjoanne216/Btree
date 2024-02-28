@@ -1,17 +1,17 @@
-package com.sgbd.tp2_impaire;
+package com.sgbd.tp2_impair;
 
 import java.util.ArrayList;
 import java.util.List;
 
 class BTreeNode {
     List<Integer> keys; //Key Value
-    int m; // comme le dégre
-    List<BTreeNode> children; // pointeurs vers les enfants
+    int m; // comme l'ordre
+    List<BTreeNode> children; // les enfants
     ParentEntry parentEntry; // pointeurs vers le parent
 
     //boolean leaf; // vrai si il est feuille
 
-    public BTreeNode(int m){
+    public BTreeNode(int m) {
         this.m =m;
     }
 
@@ -22,8 +22,11 @@ class BTreeNode {
         this.parentEntry = parentEntry;
     }
 
-    
-    // 搜索键
+
+    /**Trouvez la clé donnée
+     * @param key clé donné
+     * @return nœud de feuille où l'on peut insérer des clés， si  nœud est null, c'est à dire, on a bien trouvé la clé
+     */
     public BTreeNode search(int key) {
         // if k < K0
         //if (key < keys.get(0) && this.leaf!=true)
@@ -46,7 +49,7 @@ class BTreeNode {
             }
         }
 
-        //le loop est fini,c'est à dire K>K_num ou K=K_(num-1)
+        //le loop est fini,c'est à dire K>K_num ou K=K_(num-1), on a bien trouvé a clé
         if(key == keys.get(keys.size()-1))
             return null;
         if(isLeaf())
@@ -54,53 +57,55 @@ class BTreeNode {
         return children.get(keys.size()).search(key);// if not , do the resarch in children num+1
     }
 
+    /**
+     * @param key
+     * @return  BTreeNode[] La longueur est de trois,
+     * le premier est le nœud racine nouvellement généré, s'il est nul, cela signifie qu'aucun nouveau nœud racine n'est généré cette fois-ci.
+     * Le deuxième est le nœud de gauche après la séparation, et le troisième est le nœud de droite après la séparation.
+     */
     public BTreeNode[] insert(int key){
         BTreeNode[]  nodes = new BTreeNode[3];
         // this node n'est pleine
         if(!(this.getKeys().size()>=m-1))
         {
-            insertNonFull(key);
+            insertKey(key);
+
         }
         else{ //target est plein
            nodes = splitChild(key);
         }
+
         return nodes;
     }
 
 
-    public void insertNonFull(int key) {
+    /**Insérez la clé au bon endroit dans le nœud pour préparer la séparation.
+     * @param key clé donée
+     */
+    public void insertKey(int key) {
         //trouver une place pour insérer la valeur
         int i= 0;
         while(i<keys.size()&&keys.get(i)<key){
             i++;
         }
-        keys.add(i,key); //（插入位置为i）
-        if(!this.isLeaf()){ //如果不是子节点
-            int j = i+1;
-            while(j==this.children.size()&& children.get(j)==null){
-                int newIndex= children.get(i).getParentEntry().getIndex()+1;
-                children.get(i).getParentEntry().setIndex(newIndex);
+        keys.add(i,key);
+        if(!this.isLeaf()&&keys.size()!=m+1){  //S'il ne s'agit pas d'un nœud feuille, on change l'ordre de ses enfant
+            int j = 0;
+            while(j<this.children.size()&&children.get(j)!=null){
+                children.get(j).getParentEntry().setIndex(j);
                 j++;
             }
         }
 
     }
 
-    public void insertFull(int key){
-        //trouver une place pour insérer la valeur
-        int i= 0;
-        while(i<keys.size()&&keys.get(i)<key){
-            i++;
-        }
-        //现在数组的长度是比 m-1要大一位
-        keys.add(i,key);
-    }
 
+    /**générer la nouvelle racine
+     * @return la nouvelle racine
+     */
     public BTreeNode initialRoot(){
         BTreeNode newRoot = null;
-        //return 一个父节点加1，就是要changeRoot了
         List rootKey = new ArrayList<Integer>();
-        //children要等后面分成两个小孩之后再慢慢的去set
         newRoot = new BTreeNode(rootKey, m,new ArrayList<>(),new ParentEntry());
         //return newRoot
         this.setParentEntry(0,newRoot);
@@ -109,13 +114,16 @@ class BTreeNode {
     }
 
 
+    /**Générer le nœud de gauche après la séparation
+     * @return le nœud de gauche après la séparation
+     */
     public BTreeNode initialLeftNode(){
-        //左侧的BtreeNode
+
         BTreeNode leftNode = new BTreeNode(m);
-        //1.左侧的kyes
+        //1.keys
         List<Integer> leftKeys = new ArrayList<>(keys.subList(0,m/2));
         leftNode.setKeys(leftKeys);
-        //2.之前有m个children，现在有 m+1
+        //2.enfant
         List<BTreeNode> leftChildren;
         if(children==null){
             leftChildren = null;
@@ -124,18 +132,21 @@ class BTreeNode {
             leftChildren = new ArrayList<>(children.subList(0,(m+1)/2));
         }
         leftNode.setChildren(leftChildren);
-        //3.parentEntry 左侧的序号不变
+        //3.parentEntry ne change pas
         ParentEntry leftParentEntry = new ParentEntry(this.parentEntry.getIndex(),this.parentEntry.getParent());
         leftNode.setParentEntry(leftParentEntry);
         return leftNode;
     }
 
+    /**Générer le nœud de droite après la séparation
+     * @return le nœud de droite après la séparation
+     */
     public BTreeNode initialRightNode(){
         BTreeNode rightNode = new BTreeNode(m);
-        //1.右侧的BtreeNode
+        //1.keys
         List<Integer> rightKeys = new ArrayList<>(keys.subList(m/2+1,keys.size()));
         rightNode.setKeys(rightKeys);
-        //2.之前有m个children，现在有 m+1
+        //2.enfant
         List<BTreeNode> rightChildren;
         if(children==null){
             rightChildren = null;
@@ -144,37 +155,36 @@ class BTreeNode {
             rightChildren = new ArrayList<>(children.subList((m+1)/2,m));
         }
         rightNode.setChildren(rightChildren);
-        //3.parentEntry 右侧的序号 +1
+        //3.parentEntry （index + 1）
         ParentEntry rightparentEntry = new ParentEntry(this.parentEntry.getIndex()+1,this.parentEntry.getParent());
         rightNode.setParentEntry(rightparentEntry);
         return rightNode;
     }
 
     public BTreeNode[] splitChild(int key) {
-        //返回值，分别返回 是否有newRacine，leftNode，以及 rightNode
         BTreeNode[] nodes  =new BTreeNode[3];
-        //1.找到中间的那个数，
-        insertFull(key);
-
-        //2.把中间的那个数插入父节点
-        //2.1 判断如果父节点为null，就说明是一个root,要开始设置新的root了
+        //Trouvez le nombre qui se trouve au milieu.
+        insertKey(key);
+        //2.Insérer le nombre du milieu dans le nœud parent.
+        //2.1 Déterminez si le nœud parent est nul, s'il s'agit d'une racine et commencez à créer une nouvelle racine.
         if(this.parentEntry.getParent()==null){
             nodes[0] = initialRoot();
         }
-
-        //2.2把中间的数插入到父节点中
+        boolean inMiddle =false;
+        BTreeNode parentLeftNode = null;
+        BTreeNode parentRightNode = null;
+        //2.2 Insérer le numéro du milieu dans le nœud parent
         if(this.parentEntry.getParent().keys.size()<m-1){
-            //父节点没有满，直接插入
-            this.parentEntry.getParent().insertFull(keys.get(m/2));
+            //Le nœud parent n'est pas plein, insertion directe
+            this.parentEntry.getParent().insertKey(keys.get(m/2));
         }
         else{
-            //父节点满了，调用splitChild
+            //Lorsque le nœud parent est plein, appeler splitChild dans  le nœud parent
             nodes = this.parentEntry.getParent().splitChild(keys.get(m/2));
-            //从父亲左右节点中选择新的父节点
+            //Choisir un nouveau nœud parent parmi les nouveaux nœuds gauche et droit après la séparation du nœud parent.
             int location = getParentEntry().getIndex();
-
             //如果节点在便向右侧
-            if(location<m/2){
+            if(location<(m+1)/2-1){
                 this.setParentEntry(location,nodes[1]);
             }
 
@@ -182,26 +192,35 @@ class BTreeNode {
             if(location>(m+1)/2-1){
                 this.setParentEntry(location-((m+1)/2),nodes[2]);
             }
-
-            //Todo 如果节点在正中间
+            //如果节点在正中间
+            if(location==(m+1)/2-1){
+                inMiddle = true;
+                this.setParentEntry(location,nodes[1]);
+                parentLeftNode = nodes[0];
+                parentRightNode = nodes[1];
+            }
         }
 
-        //创建左侧的BTreeNode
+        //Création du nœud de gauche après la séparation
         nodes[1] = initialLeftNode();
-        //创建右侧的BTreeNode
+        //Création du nœud de droit après la séparation
         nodes[2] = initialRightNode();
 
+        if(inMiddle){
+            //左节点位于父亲左节点的最后一个
+            nodes[1].setParentEntry((m+1)/2-1,parentLeftNode);
+            //右节点位于父亲右节点的第一个
+            nodes[2].setParentEntry(0,parentRightNode);
+        }
 
+        //Les nœuds de gauche et de droite sont maintenant de nouveaux enfants du parent d'origine,
+        //Traitement du nœud parent par rapport aux nœuds gauche et droit
 
-        //现在left和right节点是原来parent新的子节点了，而之前的老节点从父节点中删除
-        //处理父节点与左node和右node的关系
-
-        //往父节点中添加leftnode
+        //Ajouter le nœud à gauche comme nœud enfant au nœud parent.
         this.parentEntry.getParent().children.add(nodes[1].parentEntry.getIndex(),nodes[1]);
-        //往父节点中添加rightnode
+        //Ajouter le nœud à droit comme nœud enfant au nœud parent.
         this.parentEntry.getParent().children.add(nodes[2].parentEntry.getIndex(),nodes[2]);
-        //把父节点中的冗余node删除 就是那个冗余node(多一个key的node)
-        //this.parentEntry.getParent().children.remove(nodes[2].parentEntry.getIndex()+1);
+        //Supprimer les enfants redondants du nœud parent
         this.parentEntry.getParent().children.remove(nodes[2].parentEntry.getIndex()+1);
         return nodes;
     }

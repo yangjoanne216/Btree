@@ -1,4 +1,4 @@
-package com.sgbd.tp2_paire;
+package com.sgbd.tp2_pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +27,9 @@ public class BTreeNode {
          * Si elle n'existe pas, la recherche échoue, étant donné l'endroit où la clé doit être insérée.
          *
          * @param key - Valeur de la clé donnée
-         * @return - SearchResult
+         * @return - SearchResult(Boolean result, Interger index),
+         * si on a bien trouver, result est true, l'index indique la position de l'élément
+         * si on a pas bien trouver result est false,l'index indique l'endroit où l'élément doit être inséré
          */
         public ResearchOutcome searchKey(Integer key) {
             int l = 0;
@@ -47,7 +49,8 @@ public class BTreeNode {
             if (l <= h) //on a bien trouvé
             {
                 result = true;
-                index = mid; // l'index indique la position de l'élément
+                System.out.println("on a bien trouvé "+ key + ", et on l'ajoute");
+                index = mid; // On a bien trouvé, l'index indique la position de l'élément
             } else {
                 result = false;
                 index = l; // l'index indique l'endroit où l'élément doit être inséré
@@ -74,7 +77,6 @@ public class BTreeNode {
 
             List<Integer> newKeys = new ArrayList<Integer>();
             int i = 0;
-
             for (; i < index; ++i)
                 newKeys.add(keys.get(i));
             newKeys.add(key);

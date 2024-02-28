@@ -1,7 +1,20 @@
-package com.sgbd.tp2_impaire;
+package com.sgbd.tp2_impair;
 
+/**Cette classe est utilisée pour représenter la relation entre un nœud et son nœud parent,il y a deux élément
+ * <P>
+ * où BTreeNode représente le nœud parent du nœud
+ * et l'index représente la position dans le nœud parent,
+ *
+ *</P>
+ */
 public class ParentEntry {
-    private int index; //是parent的第几个小孩
+    /**
+     * représente la position dans le nœud parent,
+     */
+    private int index;
+    /**
+     *  le nœud parent
+     */
     private BTreeNode parent;
 
     public ParentEntry(int index, BTreeNode parent) {

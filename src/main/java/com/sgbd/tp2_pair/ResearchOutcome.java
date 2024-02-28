@@ -1,11 +1,11 @@
-package com.sgbd.tp2_paire;
+package com.sgbd.tp2_pair;
 
 public class ResearchOutcome {
     /**
-     * Recherche dans le nœud de l'arbre B le résultat retourné pour la valeur clé donnée.
-     * <p/>
+     * Recherche la valeur clé donnée dans le nœud de l'arbre B.
+     *
      * Ce résultat se compose de deux parties. La première partie indique si la recherche a abouti ou non.
-     * Si la recherche a réussi, la deuxième partie indique la position de la valeur clé donnée dans le nœud de l'arbre B. Si la recherche a échoué, la deuxième partie indique la position de la valeur clé donnée dans le nœud de l'arbre B.
+     * Si la recherche a réussi, la deuxième partie indique la position de la valeur clé donnée dans le nœud de l'arbre B.
      * Si la recherche a échoué, la deuxième partie indique l'endroit où la valeur clé donnée doit être insérée.
      */
         private boolean result;
