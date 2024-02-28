@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 public class BTree {
-    private static final int DEFAULT_T = 2;
 
     private BTreeNode root;
 
@@ -80,32 +79,29 @@ public class BTree {
         siblingNode.setLeaf(childNode.isLeaf()); //Si le nœud d'origine est un nœud feuille, le nœud scindé est également un nœud feuille.
         //middle = t-1
         int middle =(m+1)/2 -1;
-        //  将满子节点中索引为[(m+1)/2, m - 2]的关键字插入新的节点中 （右侧clé）
+        //  Insérer le mot-clé avec l'index [(m+1)/2, m - 2] dans le nœud enfant complet dans le nouveau nœud.
         for (int i = (m+1)/2; i < m - 1; ++i)
             siblingNode.getKey().add(childNode.getKey().get(i));
-        /*// 提取满子节点中的中间关键字，其索引为(t - 1)
-        Integer key = childNode.getKey().get(t - 1);*/
-        // 提取满子节点中的中间关键字，其索引为(m+1)/2 -1
+
+        // // Extraire le mot-clé du milieu dans le nœud enfant complet avec l'index (m+1)/2 -1
         Integer key = childNode.getKey().get(middle);
-        /*// 删除满子节点中索引为[t - 1, 2t - 2]的t个关键字
-        for (int i = maxKeySize - 1; i >= t - 1; --i)
-            childNode.getKey().remove(i);*/
-        // 删除满子节点中索引为[(m+1)/2 -1, m-2]的t个关键字
+
+        // Supprimer les mots-clés avec l'index [(m+1)/2 -1, m-2] dans le nœud enfant complet
         for (int i = maxKeySize - 1; i >= middle; --i)
             childNode.getKey().remove(i);
-        // 如果满子节点不是叶节点，则还需要处理其子节点
+        // // Si le nœud enfant complet n'est pas un nœud feuille, ses enfants doivent également être traités.
         if (!childNode.isLeaf())
         {
-            //将满子节点中索引为[(m+1)/2, maxKeysize]的t个子节点插入新的节点中
+            //Insérer les enfants du nœud enfant complet avec l'index [(m+1)/2, maxKeysize] dans le nouveau nœud.
             for (int i = (m+1)/2; i <= maxKeySize ; ++i)
                 siblingNode.getChildren().add(childNode.getChildren().get(i));
-            // 删除满子节点中索引为[(m+1)/2 , m-2]的t个子节点
+            // Supprimer les t enfants du nœud enfant complet avec l'index [(m+1)/2 , m-2].
             for (int i = maxKeySize; i >= (m+1)/2; --i)
                 childNode.getChildren().remove(i);
         }
-        // 将key插入父节点
+        // Insérer la clé dans le nœud parent
         parentNode.insertKey(key, index);
-        // 将新节点插入父节点
+        // Insérer le nouveau nœud dans le nœud parent
         parentNode.insertChild(siblingNode, index + 1);
     }
 
@@ -129,13 +125,11 @@ public class BTree {
             if (childNode.size() == maxKeySize)
             {
                 splitNode(node, childNode, result.getIndex());
-                /* 如果给定的key大于分裂之后新生成的键值，则需要插入该新键值的右边，
-                 * 否则左边。
-                 */
+
                 if (key > node.getKey().get(result.getIndex()))
                     childNode = node.getChildren().get(result.getIndex() + 1);
             }
-            //如果子节点不是满节点
+           //Si le nœud enfant n'est pas plein
             insertNotFull(childNode, key);
         }
     }
