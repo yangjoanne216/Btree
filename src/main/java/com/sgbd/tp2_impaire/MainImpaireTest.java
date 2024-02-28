@@ -1,95 +1,88 @@
 package com.sgbd.tp2_impaire;
 
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MainImpaireTest {
 
     public static void main(String[] args) {
-
-        BTree bTree = new BTree(4);
-        bTree.insert(1);
-        bTree.show();
-        bTree.insert(2);
-        bTree.show();
-        bTree.insert(3);
-        bTree.show();
-        bTree.insert(4);
-        bTree.show();
-        bTree.insert(5);
-        bTree.show();
-        bTree.insert(6);
-        bTree.show();
-        bTree.insert(7);
-        bTree.show();
-        bTree.insert(3);
-        bTree.show();
-
-        bTree.insert(0);
-        bTree.show();
-
-        for (int i =8;i<8;i++){
-            System.out.println("ajouter" + i);
-            bTree.insert(i);
-            bTree.show();
-        }
-
-        /*test2*/
-        /*java.com.yangyang.tp2_paire.BTree bTree = new java.com.yangyang.tp2_paire.BTree(5);
-        int[] intergers = new int[]{10, 15, 30, 27, 35, 40, 45, 37, 20, 50, 55, 46, 71, 66, 74, 85, 90, 25, 81, 68, 60, 65};
-        /*for (int integer : intergers
-             ) {
-            bTree.insert(integer);
+        /*test 0: le même exercice de cours
+        List<Integer> test0 = Arrays.asList(1,2,3,4,5);
+        BTree bTree0 = new BTree(3);
+        System.out.println("this is a test 0");
+        for (int i:test0) {
+            System.out.print("ajoter " + i);
+            bTree0.insert(i);
+            bTree0.show();
+            System.out.println("------------------------");
         }*/
 
-        /*bTree.insert(10);
-        bTree.show();
-        bTree.insert(15);
-        bTree.show();
-        bTree.insert(30);
-        bTree.show();
-        bTree.insert(27);
-        bTree.show();
-        bTree.insert(35);
-        bTree.show();
-        bTree.insert(40);
-        bTree.show();
-        bTree.insert(45);
-        bTree.show();
-        bTree.insert(37);
-        bTree.show();
-        bTree.insert(20);
-        bTree.show();
-        bTree.insert(50);
-        bTree.show();
-        bTree.insert(55);
-        bTree.show();
-        bTree.insert(46);
-        bTree.show();
-        bTree.insert(71);
-        bTree.show();
-        bTree.insert(66);
-        bTree.show();
-        bTree.insert(74);
-        bTree.show();
-        bTree.insert(85);
-        bTree.show();
-        bTree.insert(90);
-        bTree.show();
-        bTree.insert(79);
-        bTree.show();
-        bTree.insert(78);
-        bTree.show();
-        bTree.insert( 95);
-        bTree.show();
-        bTree.insert(25);
-        bTree.show();
-        bTree.insert(81);
-        bTree.show();
-        bTree.insert(68);
-        bTree.show();
-        bTree.insert(60);
-        bTree.show();
-        bTree.insert(65);
-        bTree.show();
-        /*--------------------*/
+
+        /*test 2 : le même exercice de cours
+        List<Integer> test2 = Arrays.asList(50, 55, 66, 68, 70, 71, 72, 73, 79, 81, 85, 90, 95);
+        BTree bTree2 = new BTree(5);
+        System.out.println("this is a test 2");
+        for (int i:test2) {
+            System.out.print("ajoter " + i);
+            bTree2.insert(i);
+            bTree2.show();
+            System.out.println("------------------------");
+        }*/
+
+
+        /*test 1 :le même exercice de cours*/
+        //List<Integer> test1 = Arrays.asList(10, 15, 30, 27, 35, 40, 45, 37, 20, 50, 55, 46, 71, 66, 74, 85, 90, 79, 78, 95, 25, 81, 68, 60);
+        List<Integer> test1 = Arrays.asList(10, 15, 30, 27, 35, 40, 45, 37, 20, 50, 55);
+        BTree bTree1 = new BTree(5);
+        System.out.println("this is a test 1");
+        for (int i:test1) {
+            System.out.print("ajoter " + i);
+            bTree1.insert(i);
+            bTree1.show();
+            System.out.println("------------------------");
+        }
+
+        System.out.print("ajoter 46");
+        bTree1.insert(46);
+        bTree1.show();
+        System.out.println("------------------------");
+
+
+        System.out.print("ajoter 49");
+        bTree1.insert(49);
+        bTree1.show();
+        System.out.println("------------------------");
+
+        System.out.print("ajoter 56");
+        bTree1.insert(56);
+        bTree1.show();
+        System.out.println("------------------------");
+
+        System.out.print("ajoter 77");
+        bTree1.insert(77);
+        bTree1.show();
+        System.out.println("------------------------");
+
+        System.out.print("ajoter 38");
+        bTree1.insert(38);
+        bTree1.show();
+        System.out.println("------------------------");
+
+        System.out.print("ajoter 39");
+        bTree1.insert(39);
+        bTree1.show();
+        System.out.println("------------------------");
+
+        System.out.print("ajoter 39");
+        bTree1.insert(42);
+        bTree1.show();
+        System.out.println("------------------------");
+
+
+
+
     }
 
 }

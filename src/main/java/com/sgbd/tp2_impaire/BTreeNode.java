@@ -15,26 +15,6 @@ class BTreeNode {
         this.m =m;
     }
 
-    public BTreeNode(int m, List keys){
-        this.m = m;
-        this.keys = keys;
-        this.children = null;
-
-    }
-
-    public BTreeNode(int m,List keys,List children){
-        this.m = m;
-        this.keys = keys;
-        this.children = children;
-        this.children=children;
-    }
-
-    public BTreeNode(int m, boolean leaf) {
-        this.m = m;
-        this.keys = new ArrayList<>(); // chaque node a au plus m-1 valeurs
-        this.children = new ArrayList<>(); // chaque node a au plus m enfants
-    }
-
     public BTreeNode(List<Integer> keys, int m, List<BTreeNode> children, ParentEntry parentEntry) {
         this.keys = keys;
         this.m = m;
@@ -42,17 +22,7 @@ class BTreeNode {
         this.parentEntry = parentEntry;
     }
 
-    public BTreeNode(List<Integer> keys, int m, List<BTreeNode> children, ParentEntry parentEntry, int num, boolean leaf) {
-        this.keys = keys;
-        this.m = m;
-        this.children = children;
-        this.parentEntry = parentEntry;
-    }
-
-    public BTreeNode() {
-
-    }
-
+    
     // 搜索键
     public BTreeNode search(int key) {
         // if k < K0
@@ -271,7 +241,6 @@ class BTreeNode {
     public void setParentEntry(ParentEntry parentEntry) {
         this.parentEntry = parentEntry;
     }
-
 
 
     public boolean isLeaf() {
